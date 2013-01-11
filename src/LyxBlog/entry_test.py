@@ -38,7 +38,7 @@ class EntryTestCase(unittest.TestCase):
     def setUp(self):
         self.filename = 'test_files/entry_test'
         f = open(self.filename, 'w')
-        self.contents = "nothing to see here"
+        self.contents = '''Hi <img class="embedded" src="rv-8_tiny.jpg" blah blah/>'''
         f.write(self.contents)
         f.close()
         self.transmitter = Transmitter()
@@ -49,6 +49,8 @@ class EntryTestCase(unittest.TestCase):
     def test_get_num_images(self):
         aa = ElyxerEntry(self.transmitter)
         self.assertEqual(aa.get_num_images(), 0)
+        aa.load(self.filename)
+        self.assertEqual(aa.get_num_images(), 1)
 
     def test_get_title(self):
         aa = ElyxerEntry(self.transmitter)

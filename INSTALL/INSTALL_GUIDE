@@ -30,7 +30,7 @@ Navigate to the same directory where this file is located.
 To install normally (includes wordpresslib and elyxer):
   python setup.py install
 
-To install without installing elyxer (still includeds wordpresslib)
+To install without installing elyxer (still includes wordpresslib)
   python setup-no-elyxer.py install
 
 LyXBlogger is now installed as a module on your system. You invoke it 

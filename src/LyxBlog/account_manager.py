@@ -29,17 +29,22 @@ import ConfigParser
 from ConfigParser import DuplicateSectionError
 import sys, os, pdb
 from account import Account
+from transmitter import Transmitter
 
 class AccountManager:
 
     DEFAULT_ACCOUNT_ID = 0
 
     def __init__(self):
+        self.__transmitter = Transmitter()
         self.__configpath  = self.__set_configpath()
         self.__config      = self.__init_config()
         self.__default_account = self.__create_default_account()
         self.__accounts    = []
         self.__load_accounts_from_config()
+
+    def pass_transmitter(self):
+        return self.__transmitter
 
     def reset_config(self):
         self.__accounts = []
@@ -63,9 +68,14 @@ class AccountManager:
         return [self.__default_account] + self.__accounts
 
     def add_account(self, account):
+        self.__verify_account(account)
         account.set_section_id(self.__next_id())
         self.__accounts.append(account)
         self.__add_account_to_config(account)
+
+    def __verify_account(self, account):
+        self.__transmitter.load_account(account)
+        self.__transmitter.check_credentials()
 
     def __next_id(self):
         return len(self.__accounts) + 1

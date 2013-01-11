@@ -27,14 +27,14 @@
 import re, pdb
 import abc
 from abc import ABCMeta, abstractmethod
+from image import Image
 class Entry:
     __metaclass__ = ABCMeta
 
     def __init__(self, transmitter):
         self.__transmitter = transmitter
         self.__wordcount = 0
-        self.__imagecount = 0
-        self.__title = ''
+        self.__title = '*ucking amazing title'
         self.__body = ''
         self.__images = []
         self.__image_regex = self._create_image_regex()
@@ -52,11 +52,20 @@ class Entry:
         return self.__title
 
     def get_num_images(self):
-        return self.__imagecount
+        return len(self.__images)
     
     def load(self, filename):
         self.__body = self.__read_contents(filename)
         self.__extract_images_from_body()
+
+    def publish(self):
+        self.__publish_images()
+        self.__substitute_remote_image_urls_into_body()
+        self.__transmitter.publish_entry(self)
+
+    def __substitute_remote_image_urls_into_body(self):
+        for image in self.__images:
+            self.__body = self.__body.replace(image.get_local_html(), image.get_remote_html())
         
     def __read_contents(self, filename):
         f = open(filename, 'r')
@@ -74,9 +83,6 @@ class Entry:
         for image in self.__images:
             self.__transmitter.publish_image(image)
     
-    def __generate_remote_html_in_images(self):
-        for image in self.__images:
-            image.
 
 
     def __add_image(self, image):

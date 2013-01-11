@@ -38,8 +38,7 @@ class ElyxerEntry(Entry):
         regex = re.compile('''
             <img\ class="embedded"\          # The beginning of an <img> tag -- note two escaped spaces
             src="           # Note use of double quotes instead of single
-            (?!http://)     # Negative lookahead expression (if it has http:// it's already been changed to web reference)
-            ..*?            # Non-greedy (short as possible match) of stuff in middle
+            .+?             # Non-greedy match of the rest of the stuff in the middle
             />              # The closing of the <img> tag
             ''', re.VERBOSE)
         return regex

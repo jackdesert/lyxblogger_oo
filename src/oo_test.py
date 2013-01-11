@@ -40,6 +40,9 @@ versions = ['python2.6 ']
 files = ['account_test.py',   # Nice short test requiring user to hit enter
         'account_manager_test.py', # longer test that requires "test" password entered once
         'display_test.py',
+        'transmitter_test.py',
+        'entry_test.py',
+        'image_test.py',
         'lyxblogger_test.py']
 change_dir = 'cd LyxBlog\n' # Note that this does a cd and then a carriage return
 for py_vers in versions:

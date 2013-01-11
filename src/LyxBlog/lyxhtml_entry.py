@@ -36,13 +36,10 @@ class LyxhtmlEntry(Entry):
         # INTERNAL img tags look something like this:
         # <img src='0_home_jd_Escritorio_rv-8_tiny.jpg' alt='image: 0_home_jd_Escritorio_rv-8_tiny.jpg' />
         # Notice LYXHTML uses single quotes within the tag.
-
         regex = re.compile('''
-        <img\ class="embedded"\          # The beginning of an <img> tag -- note two escaped spaces
-        src="           # Note use of double quotes instead of single
-        (?!http://)     # Negative lookahead expression (if it has http:// it's already been changed to web reference)
-        ..*?            # Non-greedy (short as possible match) of stuff in middle
-        />              # The closing of the <img> tag
-        ''', re.VERBOSE)
+            <img\ src='     # The beginning of an <img> tag -- note the escaped space
+            .+?             # Non-greedy match of the rest of the stuff in the middle
+            />              # The closing of the <img> tag
+            ''', re.VERBOSE)
         return regex
 

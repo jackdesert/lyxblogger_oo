@@ -25,26 +25,31 @@
 #                                                                      #
 ########################################################################
 
-import re
+import re, sys
 from display import Display
 from account import Account
 from account_manager import AccountManager
+from transmitter import Transmitter
+from elyxer_entry import ElyxerEntry
 
 class LyXBlogger:
     def __init__(self, input_file):
         self.__display = Display()
         self.__state = 0
         self.__state_chain = ['ask', 'receive']
-        # self.__entry = Entry(input_file)
-        # self.__transmitter = Transmitter()
+        self.__entry = None
         self.__manager = AccountManager()
+        self.__input_file = input_file
 
     def start(self):
         self.__welcome()
         self.__ensure_title()
         self.__verify_which_account()
+        transmitter = self.__manager.pass_transmitter()
+        self.__entry = ElyxerEntry(transmitter)
+        self.__entry.load(self.__input_file)
+        self.__entry.publish()
         self.__verify_create_new_or_overwrite()
-        self.__transmit()
         self.__closing_remarks()
 
     def __verify_which_account(self):
@@ -76,13 +81,26 @@ class LyXBlogger:
 
     def __ensure_title(self):
         return 0
-    def __transmit(self):
-        return 0
     def __verify_create_new_or_overwrite(self):
         return 0
     def __welcome(self):
         return 0
     def __closing_remarks(self):
         return 0
+
+
+
+if __name__ == '__main__':
+    try:
+        input_file = sys.argv[1]    # Incoming file name
+        lyxblogger = LyXBlogger(input_file)
+        lyxblogger.start()
+    except IndexError:
+        handle_input_error()
+    except SystemExit:
+        pass    # Let this exception pass through so sys.exit() calls will work
+    #except:
+        #pass
+        #handle_general_error()
 
 
