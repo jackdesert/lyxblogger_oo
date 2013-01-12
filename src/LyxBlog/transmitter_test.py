@@ -69,8 +69,9 @@ class DisplayTestCase(unittest.TestCase):
         aa = Transmitter()
         aa.load_account(self.account_with_good_password)
         filename = 'test_files/entry_test'
-        entry = ElyxerEntry(filename)
-        aa.upload_entry(entry)
+        entry = ElyxerEntry(aa)
+        entry.load(filename)
+        aa.publish_entry(entry)
 
 if __name__ == '__main__':
     unittest.main()

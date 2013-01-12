@@ -26,13 +26,15 @@
 ########################################################################
 
 import sys, getpass, pdb
+from jabber import Jabber
 
 class Display:
 
     MARKER = "  **"
+    INDENT = 4 * ' '
 
-    def __init__(self):
-        self.indent = 4 * ' ' 
+    def __init__(self, jabber = None):
+        self.__jabber = jabber or Jabber()
 
     def __send(self, text):
         # Use sys.stdout instead of print so results can be used for automated testing
@@ -67,9 +69,7 @@ class Display:
         self.__send("\nPROMPT for PASSWORD?")
         self.__send("Press ENTER now to be prompted each time (recommended).")
         self.__send("Or type your precious password here, to be saved as plain text on you computer.")
-        password = getpass.getpass()
-        return password
-
+        return self.__get_hidden_response()
 
     def print_format(self, in_format):
         return self.__print_arbitrary('Format', in_format)
@@ -82,10 +82,6 @@ class Display:
 
     def print_image_count(self, in_count):
         return self.__print_arbitrary('Image Count', in_count)
-
-    def ask_for_password(self):
-         self.__send('Please enter your password')
-         return self.__get_hidden_response()
 
     def ask_which_account(self, accounts, recent_id, delete=False):
         self.__print_accounts(accounts, recent_id, delete)
@@ -107,11 +103,13 @@ class Display:
         return sys.stdin.readline().replace('\n', '')
 
     def __get_hidden_response(self):
-        return getpass.getpass()
+        # The getpass.getpass() thingy is too smart to be redirected
+        # So we will manually pull from either __jabber if it has anything in it
+        return self.__jabber.readline() or getpass.getpass()
 
 
     def __print_arbitrary(self, label, text, indent_level=1):
-        msg = self.indent * indent_level
+        msg = Display.INDENT * indent_level
         msg += "{0}: {1}".format(label, text)
         return self.__send(msg)
         

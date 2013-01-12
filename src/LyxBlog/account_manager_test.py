@@ -36,23 +36,25 @@ from account_manager import SystemNotFoundError
 
 class AccountManagerTestCase(unittest.TestCase):
 
-#    def test_initialization(self):
-#        a = AccountManager()
-#        path = a._AccountManager__configpath
-#        self.assertTrue(path.endswith(".lyxblogger/config.cfg"))
-#    def test_system_not_found_error(self):
-#        saved_platform = sys.platform
-#        sys.platform = 'spiderman'
-#        self.assertRaises(SystemNotFoundError, AccountManager)
-#        sys.platform = saved_platform
-#    def test_add_account(self):
-#        a = AccountManager()
-#        url = 'http://myblog.com'
-#        username = 'charles'
-#        password = 'not telling'
-#        a.add_account(url, username, password)
-#        accounts = a._AccountManager__accounts
-#        self.assertEquals(a._AccountManager__accounts[0], Account(url, username, password))
+    def test_initialization(self):
+        a = AccountManager()
+        path = a._AccountManager__configpath
+        self.assertTrue(path.endswith(".lyxblogger/config.cfg"))
+    def test_system_not_found_error(self):
+        saved_platform = sys.platform
+        sys.platform = 'spiderman'
+        self.assertRaises(SystemNotFoundError, AccountManager)
+        sys.platform = saved_platform
+    def test_add_account(self):
+        aa = AccountManager()
+        aa.reset_config()
+        url = 'http://myblog.com'
+        username = 'charles'
+        password = 'not telling'
+        new_account = Account(url, username, password)
+        aa.add_account(new_account)
+        accounts = aa._AccountManager__accounts
+        self.assertEquals(aa._AccountManager__accounts[0], Account(url, username, password))
     def test_add_account_to_config(self):
         # '__add_account_to_config' must throw an exception if it is fed an account
         # that does not have a section_id
@@ -81,6 +83,16 @@ class AccountManagerTestCase(unittest.TestCase):
         aa.reset_config()
         expected = aa._AccountManager__default_account
         self.assertEqual(aa.get_recent_account(), expected)
+    def test_get_account_by_id(self): 
+        aa = AccountManager()
+        aa.reset_config()
+        url = 'hi.com'
+        username = 'babyblue'
+        password = None
+        new_account = Account(url, username, password)
+        aa.add_account(new_account)
+        self.assertEqual(aa._AccountManager__default_account, aa.get_account_by_id(0))
+        self.assertEqual(new_account, aa.get_account_by_id(1))
     def test_recent_account(self): 
         aa = AccountManager()
         aa.reset_config()
@@ -91,6 +103,8 @@ class AccountManagerTestCase(unittest.TestCase):
         aa.add_account(new_account)
         self.assertEqual(new_account, aa.get_account_by_id(1))
         self.assertEqual(new_account, aa.get_recent_account())
+        self.assertEqual(aa._AccountManager__default_account, aa.get_account_by_id(0))
+        self.assertEqual(aa._AccountManager__default_account, aa.get_recent_account())
         
 
 if __name__ == '__main__':

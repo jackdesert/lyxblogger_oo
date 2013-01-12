@@ -32,6 +32,7 @@ import unittest
 import pdb
 from display import Display
 from account import Account
+from jabber import Jabber
 
 class DisplayTestCase(unittest.TestCase):
 
@@ -49,10 +50,27 @@ class DisplayTestCase(unittest.TestCase):
     def test_print_image_count(self):
         expected = self.display.print_image_count('random')
         self.assertEqual(expected, "    Image Count: random")
-    def test_ask_for_password(self):
-        print "\n\nIn a couple of lines you will be asked for a password. You must type something in before the test can proceed.\n\nPlease enter the word 'test'\n\n"
-        expected = self.display.ask_for_password()
+    def test_ask_for_new_password_with_jabber(self):
+        jabber = Jabber(['test'])
+        new_display = Display(jabber)
+        expected = new_display.ask_for_new_password()
         self.assertEqual(expected, "test")
+    def test_ask_for_new_username_with_jabber(self):
+        jabber = Jabber(['microgasm'])
+        new_display = Display(jabber)
+        expected = new_display.ask_for_new_username()
+        self.assertEqual(expected, 'microgasm')
+    def test_ask_which_account_with_jabber(self):
+        jabber = Jabber(['1300'])
+        new_display = Display(jabber)
+        account = Account('url', 'username', 'password')
+        expected = new_display.ask_which_account([account], 17)
+        self.assertEqual(expected, '1300')
+    def test_ask_for_new_url_with_jabber(self):
+        jabber = Jabber(['whee.com'])
+        new_display = Display(jabber)
+        expected = new_display.ask_for_new_url()
+        self.assertEqual(expected, 'whee.com')
     def test_print_accounts(self):
         account = Account('url', 'username', 'password')
         account.set_section_id(1)

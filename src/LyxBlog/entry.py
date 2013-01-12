@@ -34,7 +34,7 @@ class Entry:
     def __init__(self, transmitter):
         self.__transmitter = transmitter
         self.__wordcount = 0
-        self.__title = '*ucking amazing title'
+        self.__title = ''
         self.__body = ''
         self.__images = []
         self.__image_regex = self._create_image_regex()
@@ -57,6 +57,7 @@ class Entry:
     def load(self, filename):
         self.__body = self.__read_contents(filename)
         self.__extract_images_from_body()
+        self.__title = '*ucking amazing title'
 
     def publish(self):
         self.__publish_images()

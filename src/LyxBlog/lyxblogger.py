@@ -33,8 +33,8 @@ from transmitter import Transmitter
 from elyxer_entry import ElyxerEntry
 
 class LyXBlogger:
-    def __init__(self, input_file):
-        self.__display = Display()
+    def __init__(self, input_file, display = None):
+        self.__display = display or Display()
         self.__state = 0
         self.__state_chain = ['ask', 'receive']
         self.__entry = None

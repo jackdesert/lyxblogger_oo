@@ -24,25 +24,20 @@
 #   along with LyXBlogger.  If not, see <http://www.gnu.org/licenses>. #
 #                                                                      #
 ########################################################################
+import sys, pdb
 
-# Code to test image.py
+class Jabber:
+    '''By instantiating this class with a queue, all calls to stdin will be 
+       intercepted and will be fed whatever is in the __queue'''
 
-import unittest
-import pexpect
-from lyxblogger import LyXBlogger
-
-class LyxbloggerTestCase(unittest.TestCase):
-
-    def test_initialize(self):
-        filename = 'test_files/entry_test'
-        aa = LyXBlogger(filename)
-    def test_basic_runthrough(self):
-        filename = 'test_files/entry_test'
-        print 'about to spawn'
-        child = pexpect.spawn('python lyxblogger.py {0}'.format(filename))
-        print 'about to expect'
-        child.expect('Delete')
-
-if __name__ == '__main__':
-    unittest.main()
+    def __init__(self, queue = []):
+        self.__queue = queue
+        if not queue == []:
+            sys.stdin = self
+    
+    def readline(self):
+        try:
+            return self.__queue.pop(0)
+        except IndexError:
+            return None
 

@@ -28,20 +28,29 @@
 # Code to test image.py
 
 import unittest
-import pexpect
-from lyxblogger import LyXBlogger
+import pdb
+import getpass
+from jabber import Jabber
 
-class LyxbloggerTestCase(unittest.TestCase):
+class JabberTestCase(unittest.TestCase):
 
-    def test_initialize(self):
-        filename = 'test_files/entry_test'
-        aa = LyXBlogger(filename)
-    def test_basic_runthrough(self):
-        filename = 'test_files/entry_test'
-        print 'about to spawn'
-        child = pexpect.spawn('python lyxblogger.py {0}'.format(filename))
-        print 'about to expect'
-        child.expect('Delete')
+    def test_initialization(self):
+        queue = ['hi', 'there', 'joe']
+        jabber = Jabber(queue)
+        loaded_queue = jabber._Jabber__queue
+        self.assertTrue(isinstance(loaded_queue, list))
+    def test_readline(self):
+        queue = ['hi', 'there', 'joe']
+        jabber = Jabber(queue)
+        self.assertEqual(jabber.readline(), 'hi')
+        self.assertEqual(jabber.readline(), 'there')
+        self.assertEqual(jabber.readline(), 'joe')
+        self.assertEqual(jabber.readline(), None)
+    def test_interrupts_stdio(self):
+        queue = ['hi', 'there', 'joe']
+        jabber = Jabber(queue)
+        self.assertEqual(raw_input(), 'hi')
+        self.assertEqual(getpass.getpass(), 'there')
 
 if __name__ == '__main__':
     unittest.main()
