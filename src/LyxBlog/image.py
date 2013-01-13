@@ -25,15 +25,26 @@
 #                                                                      #
 ########################################################################
 
-import pdb, re
+import pdb, re, os
 
 class Image:
+
+    # some methods may trow an exception until __abs_reference_dir is set to a string value
+    __abs_reference_dir = None
 
     def __init__(self, local_html):
         self.__local_html = local_html
         self.__local_src = self.__parse_local_src()
         self.__remote_src = None
 
+
+    def get_local_absolute_src(self):
+        if not self.__abs_reference_dir: raise ReferenceDirError
+        if os.path.isabs(self.__local_src): 
+            return self.__local_src
+        else:
+            return os.path.join(self.__abs_reference_dir, self.__local_src) 
+        
 
     def get_local_html(self):
         return self.__local_html
@@ -54,4 +65,14 @@ class Image:
     def get_remote_html(self):
         return self.get_local_html().replace(self.__local_src, self.__remote_src)
 
- 
+    @classmethod
+    def set_abs_reference_dir_from_html_file(cls, html_file):
+        abs_path = os.path.abspath(html_file)
+        abs_dir = os.path.dirname(abs_path)
+        cls.__abs_reference_dir = abs_dir
+
+class ReferenceDirError(Exception):
+    def __init__(self):
+        self.msg = '''You must define class method Image.__reference_dir before calling this method'''
+
+

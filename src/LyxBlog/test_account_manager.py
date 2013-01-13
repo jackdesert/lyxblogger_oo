@@ -45,18 +45,37 @@ class AccountManagerTestCase(unittest.TestCase):
         sys.platform = 'spiderman'
         self.assertRaises(SystemNotFoundError, AccountManager)
         sys.platform = saved_platform
-    def test_add_account(self):
+    def test_add_new_account(self):
         aa = AccountManager()
         aa.reset_config()
         url = 'http://myblog.com'
         username = 'charles'
         password = 'not telling'
         new_account = Account(url, username, password)
-        aa.add_account(new_account)
+        aa.add_new_account(new_account)
         accounts = aa._AccountManager__accounts
-        self.assertEquals(aa._AccountManager__accounts[0], Account(url, username, password))
-    def test_add_account_to_config(self):
-        # '__add_account_to_config' must throw an exception if it is fed an account
+        self.assertEquals(accounts[0], Account(url, username, password))
+        self.assertEqual(len(accounts), 1)
+    def test_retrieving_account_with_None_password(self):
+        aa = AccountManager()
+        aa.reset_config()
+        url = 'aa.com'
+        username = 'my_account'
+        password = None
+        new_account = Account(url, username, password)
+        aa.add_new_account(new_account)
+        aa_retrieved = aa.get_account_by_id(1)
+        self.assertEqual(aa_retrieved.get_url(), 'aa.com')
+        self.assertEqual(aa_retrieved.get_password(), None)
+        bb = AccountManager()   # new instance, pulled from config file
+        bb_retrieved = bb.get_account_by_id(1)
+        self.assertEqual(bb_retrieved.get_url(), 'aa.com')
+        self.assertEqual(bb_retrieved.get_password(), None)
+
+
+
+    def test_add_new_account_to_config(self):
+        # '__add_new_account_to_config' must throw an exception if it is fed an account
         # that does not have a section_id
         url = 'bb.com'
         username = 'yesman'
@@ -72,7 +91,7 @@ class AccountManagerTestCase(unittest.TestCase):
         username = 'mgh'
         password = 'no fair yelling'
         new_account = Account(url, username, password)
-        aa.add_account(new_account)
+        aa.add_new_account(new_account)
         self.assertEqual(len(aa.get_accounts()), 2)
         bb = AccountManager()
         aa_account = aa.get_accounts()[0]
@@ -81,7 +100,7 @@ class AccountManagerTestCase(unittest.TestCase):
     def test_default_account(self):
         aa = AccountManager()
         aa.reset_config()
-        expected = aa._AccountManager__default_account
+        expected = AccountManager.get_default_account() 
         self.assertEqual(aa.get_recent_account(), expected)
     def test_get_account_by_id(self): 
         aa = AccountManager()
@@ -90,8 +109,8 @@ class AccountManagerTestCase(unittest.TestCase):
         username = 'babyblue'
         password = None
         new_account = Account(url, username, password)
-        aa.add_account(new_account)
-        self.assertEqual(aa._AccountManager__default_account, aa.get_account_by_id(0))
+        aa.add_new_account(new_account)
+        self.assertEqual(AccountManager.get_default_account(), aa.get_account_by_id(0))
         self.assertEqual(new_account, aa.get_account_by_id(1))
     def test_recent_account(self): 
         aa = AccountManager()
@@ -100,11 +119,11 @@ class AccountManagerTestCase(unittest.TestCase):
         username = 'babyblue'
         password = None
         new_account = Account(url, username, password)
-        aa.add_account(new_account)
+        aa.add_new_account(new_account)
         self.assertEqual(new_account, aa.get_account_by_id(1))
         self.assertEqual(new_account, aa.get_recent_account())
-        self.assertEqual(aa._AccountManager__default_account, aa.get_account_by_id(0))
-        self.assertEqual(aa._AccountManager__default_account, aa.get_recent_account())
+        self.assertEqual(AccountManager.get_default_account(), aa.get_account_by_id(0))
+        self.assertEqual(AccountManager.get_default_account(), aa.get_recent_account())
         
 
 if __name__ == '__main__':

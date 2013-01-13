@@ -30,17 +30,28 @@ import xmlrpclib, socket, wordpresslib
 
 class Transmitter:
 
+    NONSENSE = 'gobbledygook'
+
     def __init__(self):
         self.__account = None
         self.__connection = None
 
     def publish_image(self, image):
-        src = 'http://somesite.com/somepath.jpg'
-        image.set_remote_src(src)
+        remote_src = self.__connection.newMediaObject(image.get_local_absolute_src())
+        image.set_remote_src(remote_src)
 
-    def load_account(self, account):
+    def set_account(self, account):
         self.__account = account
-        self.__connection = wordpresslib.WordPressClient(account.get_full_url(), account.get_username(), account.get_password())
+        self.__set_connection()
+
+    def __set_connection(self):
+        self.__connection = wordpresslib.WordPressClient(
+            self.__account.get_full_url(), 
+            self.__account.get_username(), 
+            self.__account.get_password())
+
+    def refresh_connection_with_account_details(self):
+        self.__set_connection()
 
         
     def select_post_id(self):
@@ -54,6 +65,9 @@ class Transmitter:
         post.title = entry.get_title()
         post.categories = categories
         post.description = entry.get_body()
+        if not post.title: raise IncompleteEntryError('title')
+        if not post.categories: raise IncompleteEntryError('categories')
+        if not post.description: raise IncompleteEntryError('description')
         try:
             self.__connection.newPost(post, True)
             return True
@@ -70,13 +84,17 @@ class Transmitter:
     def check_credentials(self):
         rpc_server = xmlrpclib.ServerProxy(self.__account.get_full_url())
         password = self.__account.get_password()
-        if password == None: password = ''
+        if not password: password = Transmitter.NONSENSE
         try:
+            print 'about to check credentials, password={}'.format(password)
             rpc_server.blogger.getUserInfo('', self.__account.get_username(), password)
+            print 'back after checking'
             return True
         except socket.gaierror:    # gaierror caught if no connection to host
+            print 'back after checking'
             return 'host not found'
         except xmlrpclib.Fault:    # xmlFault caught if host found but user/pass mismatch
+            print 'back after checking'
             if self.__account.get_password() == None:
                 # Don't bother checking password if none given
                 return True
@@ -84,8 +102,11 @@ class Transmitter:
                 return 'username/password error'
         except xmlrpclib.ProtocolError:
             # Usually this just means try again--not your fault
+            print 'back after checking'
             return 'protocol error'
 
 
             
-            
+class IncompleteEntryError(Exception):
+    def __init__(self, missing_piece):
+        self.msg = 'Entry must have a {0} before transmitter can publish'.format(missing_piece) 

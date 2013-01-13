@@ -29,37 +29,53 @@
 
 import unittest
 import pdb
-from elyxer_entry import ElyxerEntry 
-from lyxhtml_entry import LyxhtmlEntry 
-from transmitter import Transmitter
+from account import Account
+from account import TempPasswordAlreadySetError
 
-class EntryTestCase(unittest.TestCase):
+class AccountTestCase(unittest.TestCase):
 
-    def setUp(self):
-        self.filename = 'test_files/entry_test'
-        f = open(self.filename, 'w')
-        self.contents = '''Hi <img class="embedded" src="rv-8_tiny.jpg" blah blah/>'''
-        f.write(self.contents)
-        f.close()
-        self.transmitter = Transmitter()
-    def test_get_num_words(self):
-        aa = ElyxerEntry(self.transmitter)
-        self.assertEqual(aa.get_num_words(), 0)
+    def test_initialization(self):
+        url = 'http://hi.com'
+        user = 'joe'
+        password = 'nobodys business'
+        a = Account(url, user, password)
+        self.assertEqual(a._Account__section_id, None)
+        self.assertEqual(a._Account__url, 'hi.com')
+        self.assertEqual(a._Account__username, user)
+        self.assertEqual(a._Account__password, password)
+        self.assertEqual(a._Account__section_id, None)
+    def test_url(self):
+        url = 'blah'
+        aa = Account(url, 'moose', 'long_underwear')
+        self.assertEqual(aa.get_url(), url)
+    def test_username(self):
+        username = 'bones'
+        aa = Account('http://hi.com', username, 'fancy_password')
+        self.assertEqual(aa.get_username(), username)
+    def test_password(self):
+        aa = Account('blah', 'barry', None)
+        self.assertEqual(aa.get_password(), None)
+        password = 'password'
+        aa.set_password(password)
+        self.assertEqual(aa.get_password(), password)
+    def test_eq(self):
+        url = 'long one'
+        username = 'shirade'
+        password = 'long'
+        aa = Account(url, username, password)
+        bb = Account(url, username, password)
+        self.assertEqual(aa, bb)
+    def test_get_temp_password(self):
+        url = 'wheeeeeeeeeeeee.com'
+        username = 'helLo'
+        password = None
+        aa = Account(url, username, password)
+        self.assertEqual(aa.get_password(), None)
+        aa.set_temp_password('bleep')
+        self.assertEqual(aa.get_password(), 'bleep')
+        self.assertRaises(TempPasswordAlreadySetError, lambda: aa.set_temp_password('second bleep'))
 
-    def test_get_num_images(self):
-        aa = ElyxerEntry(self.transmitter)
-        self.assertEqual(aa.get_num_images(), 0)
-        aa.load(self.filename)
-        self.assertEqual(aa.get_num_images(), 1)
-
-    def test_get_title(self):
-        aa = ElyxerEntry(self.transmitter)
-        self.assertEqual(aa.get_title(), '')
-
-    def test_load(self):
-        aa = ElyxerEntry(self.transmitter)
-        aa.load(self.filename)
-        self.assertEqual(aa.get_body(), self.contents)
+        
 
 if __name__ == '__main__':
     unittest.main()

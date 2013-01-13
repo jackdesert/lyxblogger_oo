@@ -32,46 +32,53 @@ import pdb
 from transmitter import Transmitter
 from image import Image
 from account import Account
+from account_manager import AccountManager
 from elyxer_entry import ElyxerEntry
 
 class DisplayTestCase(unittest.TestCase):
 
     def setUp(self):
+        self.filename = 'test_files/entry_test'
         self.bogus_account = Account('nonsenseasdfasdf.com', 'barry', 'manilow')
         self.account_with_bad_password = Account('blogtest.letseatalready.com', 'test', 'not_test')
         self.account_with_good_password = Account('blogtest.letseatalready.com', 'test', 'test')
         self.account_with_no_password = Account('blogtest.letseatalready.com', 'test', None)
     def test_publish_image(self):
-        aa = Transmitter()
-        image = Image("some <img src='hi' /> string")
+        Image.set_abs_reference_dir_from_html_file(self.filename)
+        account = AccountManager.get_default_account()
+        tt = Transmitter()
+        tt.set_account(account)
+        image = Image("some <img src='Suzanne.jpg' /> string")
         before = image.get_remote_src()
         self.assertEqual(before, None)
-        aa.publish_image(image)
+        tt.publish_image(image)
         after = image.get_remote_src()
         self.assertNotEqual(after, None)
     def test_check_credentials_bogus(self):
-        aa = Transmitter()
-        aa.load_account(self.bogus_account)
-        self.assertEquals(aa.check_credentials(), 'host not found') 
+        tt = Transmitter()
+        tt.set_account(self.bogus_account)
+        self.assertEquals(tt.check_credentials(), 'host not found') 
     def test_check_credentials_bad_password(self):
-        aa = Transmitter()
-        aa.load_account(self.account_with_bad_password)
-        self.assertEquals(aa.check_credentials(), 'username/password error') 
+        tt = Transmitter()
+        tt.set_account(self.account_with_bad_password)
+        self.assertEquals(tt.check_credentials(), 'username/password error') 
     def test_check_credentials_golden_password(self):
-        aa = Transmitter()
-        aa.load_account(self.account_with_good_password)
-        self.assertEquals(aa.check_credentials(), True) 
+        tt = Transmitter()
+        tt.set_account(self.account_with_good_password)
+        self.assertEquals(tt.check_credentials(), True) 
     def test_check_credentials_no_password(self):
-        aa = Transmitter()
-        aa.load_account(self.account_with_no_password)
-        self.assertEquals(aa.check_credentials(), True) 
+        tt = Transmitter()
+        tt.set_account(self.account_with_no_password)
+        self.assertEquals(tt.check_credentials(), True) 
     def test_upload_entry(self):
-        aa = Transmitter()
-        aa.load_account(self.account_with_good_password)
+        tt = Transmitter()
+        tt.set_account(self.account_with_good_password)
         filename = 'test_files/entry_test'
-        entry = ElyxerEntry(aa)
+        entry = ElyxerEntry()
+        entry.set_transmitter(tt)
         entry.load(filename)
-        aa.publish_entry(entry)
+        entry.set_title('WoooYAH!')
+        tt.publish_entry(entry)
 
 if __name__ == '__main__':
     unittest.main()

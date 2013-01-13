@@ -33,28 +33,35 @@ import pdb
 from display import Display
 from account import Account
 from jabber import Jabber
+from image import Image
+from elyxer_entry import ElyxerEntry
 
 class DisplayTestCase(unittest.TestCase):
 
     def setUp(self):
         self.display = Display()
-    def test_print_format(self):
-        expected = self.display.print_format('random')
-        self.assertEqual(expected, "    Format: random")
-    def test_print_title(self):
-        expected = self.display.print_title('random')
-        self.assertEqual(expected, "    Title: random")
-    def test_print_word_count(self):
-        expected = self.display.print_word_count('random')
-        self.assertEqual(expected, "    Word Count: random")
-    def test_print_image_count(self):
-        expected = self.display.print_image_count('random')
-        self.assertEqual(expected, "    Image Count: random")
+    def test_print_entry_summary(self):
+        entry = ElyxerEntry()
+        entry._Entry__images = [Image("<img src='photo.jpg' />")]
+        entry._Entry__title = 'my title'
+        entry._Entry__body = 'fine, fine day'
+        returned = self.display.print_entry_summary(entry)
+        expected = "You are about to publish:\n\n    my title\n      3 words\n      1 image\n"
+        print '**************************************************************'
+        print returned
+        print expected
+        self.assertEqual(returned, expected)
     def test_ask_for_new_password_with_jabber(self):
         jabber = Jabber(['test'])
         new_display = Display(jabber)
         expected = new_display.ask_for_new_password()
         self.assertEqual(expected, "test")
+    def test_ask_for_temp_password_with_jabber(self):
+        jabber = Jabber(['a temporary password'])
+        new_display = Display(jabber)
+        account = Account('hi', 'there', None)
+        expected = new_display.ask_for_temp_password(account)
+        self.assertEqual(expected, "a temporary password")
     def test_ask_for_new_username_with_jabber(self):
         jabber = Jabber(['microgasm'])
         new_display = Display(jabber)
@@ -66,6 +73,11 @@ class DisplayTestCase(unittest.TestCase):
         account = Account('url', 'username', 'password')
         expected = new_display.ask_which_account([account], 17)
         self.assertEqual(expected, '1300')
+    def test_ask_for_title_with_jabber(self):
+        jabber = Jabber(['Love Conquers All'])
+        new_display = Display(jabber)
+        expected = new_display.ask_for_title()
+        self.assertEqual(expected, 'Love Conquers All')
     def test_ask_for_new_url_with_jabber(self):
         jabber = Jabber(['whee.com'])
         new_display = Display(jabber)
@@ -77,6 +89,9 @@ class DisplayTestCase(unittest.TestCase):
         expected = "ACCOUNTS\nEnter the number next to the desired account.\n(**latest) N = New, D = Delete\n1. username@url  **"
         result = self.display._Display__print_accounts([account], 1, False)
         self.assertEqual(result, expected)
+    def test_welcome(self):
+        self.assertEqual(self.display.welcome('33'), 'LyXBlogger 33')
+        
 
 
 if __name__ == '__main__':

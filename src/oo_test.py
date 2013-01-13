@@ -37,13 +37,12 @@ def pr3(something):
 # simplifying tests by only testing one python version for now.
 versions = ['python2.6 ']
 # Running interact_test.py first
-files = ['account_test.py',   # Nice short test requiring user to hit enter
-        'account_manager_test.py', # longer test that requires "test" password entered once
-        'display_test.py',
-        'transmitter_test.py',
-        'entry_test.py',
-        'image_test.py',
-        'lyxblogger_test.py']
+files = ['test_account.py',   # Nice short test requiring user to hit enter
+        'test_account_manager.py', # longer test that requires "test" password entered once
+        'test_display.py',
+        'test_entry.py',
+        'test_image.py',
+        'test_transmitter.py']
 change_dir = 'cd LyxBlog\n' # Note that this does a cd and then a carriage return
 for py_vers in versions:
     for test_file in files:

@@ -25,7 +25,7 @@
 #                                                                      #
 ########################################################################
 
-import re, sys
+import re, sys, pdb
 from display import Display
 from account import Account
 from account_manager import AccountManager
@@ -33,31 +33,35 @@ from transmitter import Transmitter
 from elyxer_entry import ElyxerEntry
 
 class LyXBlogger:
+
+    VERSION = '0.43'
     def __init__(self, input_file, display = None):
         self.__display = display or Display()
         self.__state = 0
-        self.__state_chain = ['ask', 'receive']
         self.__entry = None
         self.__manager = AccountManager()
         self.__input_file = input_file
 
     def start(self):
         self.__welcome()
-        self.__ensure_title()
-        self.__verify_which_account()
-        transmitter = self.__manager.pass_transmitter()
-        self.__entry = ElyxerEntry(transmitter)
+        self.__entry = ElyxerEntry()
         self.__entry.load(self.__input_file)
-        self.__entry.publish()
+        self.__ensure_title()
+        self.__display_summary()
+        account = self.__verify_which_account()
+        self.__ensure_password(account)
+        transmitter = self.__manager.pass_transmitter()
+        self.__entry.set_transmitter(transmitter)
         self.__verify_create_new_or_overwrite()
+        self.__entry.publish()
         self.__closing_remarks()
 
     def __verify_which_account(self):
         dd = self.__display
         mm = self.__manager
-        accounts = mm.get_accounts()
         recent_id = mm.get_recent_id()
         while(1):
+            accounts = mm.get_accounts()
             response_with_case = dd.ask_which_account(accounts, recent_id)
             response = response_with_case.lower()
             if response == 'd':
@@ -68,9 +72,8 @@ class LyXBlogger:
                 url = dd.ask_for_new_url()
                 password = dd.ask_for_new_password()
                 new_account = Account(url, username, password)
-                mm.add_account(new_account)
+                mm.add_new_account(new_account)
             elif response == '':
-                account_id = -1 # negative indicates whatever was last used
                 return mm.get_recent_account()
             elif re.compile('^\d+$').match(response):
                 account_id = int(response)
@@ -80,13 +83,26 @@ class LyXBlogger:
 
 
     def __ensure_title(self):
-        return 0
+        if not self.__entry.get_title():
+            title = self.__display.ask_for_title()
+            self.__entry.set_title(title)
+        
+    def __ensure_password(self, account):
+        if not account.get_password():
+            temp = self.__display.ask_for_temp_password(account)
+            account.set_temp_password(temp)
+
     def __verify_create_new_or_overwrite(self):
-        return 0
+        pass
+
     def __welcome(self):
-        return 0
+        self.__display.welcome(LyXBlogger.VERSION)
+
     def __closing_remarks(self):
-        return 0
+        pass
+
+    def __display_summary(self):
+        self.__display.print_entry_summary(self.__entry)
 
 
 

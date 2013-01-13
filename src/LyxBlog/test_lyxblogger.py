@@ -27,21 +27,22 @@
 
 # Code to test image.py
 
-import unittest
+import unittest, sys
 import pexpect
 from lyxblogger import LyXBlogger
 
 class LyxbloggerTestCase(unittest.TestCase):
 
+    def setUp(self):
+        self.filename = '../../test_samples/original.elyxer_html' 
     def test_initialize(self):
-        filename = 'test_files/entry_test'
-        aa = LyXBlogger(filename)
+        aa = LyXBlogger(self.filename)
     def test_basic_runthrough(self):
-        filename = 'test_files/entry_test'
-        print 'about to spawn'
-        child = pexpect.spawn('python lyxblogger.py {0}'.format(filename))
-        print 'about to expect'
+        child = pexpect.spawn('python lyxblogger.py {0}'.format(self.filename))
+        child.logfile = sys.stdout
         child.expect('Delete')
+        child.sendline('0')
+        child.expect('Salvation')
 
 if __name__ == '__main__':
     unittest.main()

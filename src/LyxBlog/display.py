@@ -31,20 +31,10 @@ from jabber import Jabber
 class Display:
 
     MARKER = "  **"
-    INDENT = 4 * ' '
+    INDENT = 2 * ' '
 
     def __init__(self, jabber = None):
         self.__jabber = jabber or Jabber()
-
-    def __send(self, text):
-        # Use sys.stdout instead of print so results can be used for automated testing
-        # For some reason a newline character is required to flush ?
-        # That's okay, because we'll use str.rstrip on the other side
-        text = str(text)  # This makes sure that anything printable can be passed through
-        sys.stdout.write(text + '\n')
-        # Each line must be flushed so it can be read by the other side.
-        sys.stdout.flush()
-        return text
 
     def ask_for_new_username(self):
         self.__send('\nCREATING NEW PROFILE.')
@@ -55,6 +45,15 @@ class Display:
             if username != '': break
         self.__send("Username is " + username + '.')
         return username
+
+    def ask_for_title(self):
+        self.__send("\nTITLE")
+        while (1):
+            self.__send("No title found. Please enter title now.")
+            title = self.__get_response()
+            if title != '': break
+        return title
+
 
     def ask_for_new_url(self):
         self.__send("\nURL")
@@ -71,22 +70,35 @@ class Display:
         self.__send("Or type your precious password here, to be saved as plain text on you computer.")
         return self.__get_hidden_response()
 
-    def print_format(self, in_format):
-        return self.__print_arbitrary('Format', in_format)
-
-    def print_title(self, in_title):
-        return self.__print_arbitrary('Title', in_title)
-
-    def print_word_count(self, in_count):
-        return self.__print_arbitrary('Word Count', in_count)
-
-    def print_image_count(self, in_count):
-        return self.__print_arbitrary('Image Count', in_count)
+    def ask_for_temp_password(self, account):
+        username = account.get_username()
+        url = account.get_url()
+        self.__send("\nPlease enter password for {}@{}".format(username, url))
+        return self.__get_hidden_response()
 
     def ask_which_account(self, accounts, recent_id, delete=False):
         self.__print_accounts(accounts, recent_id, delete)
         return self.__get_response()
 
+    def print_unrecognized_response(self, response):
+        msg = "\nUNRECOGNIZED RESPONSE: '{0}'".format(response) 
+        return self.__send(msg)
+
+    def welcome(self, version):
+        msg = "LyXBlogger {0}".format(version)
+        return self.__send(msg)
+
+    def print_entry_summary(self, entry):
+        msg = 'You are about to publish:\n\n'
+        msg += self.__indent2(entry.get_title() + '\n')
+        msg += self.__indent3('{0} words\n'.format(entry.get_num_words()))
+        image_count = entry.get_num_images()
+        if image_count == 1:
+            msg += self.__indent3('1 image\n')
+        elif image_count > 1:
+            msg += self.__indent3('{0} images\n'.format(image_count))
+        return self.__send(msg)
+ 
     def __print_accounts(self, accounts, recent_id, delete):
         msg =  'ACCOUNTS\n'
         if delete:
@@ -115,11 +127,29 @@ class Display:
         
         
 
-    def __indent(self, text):
-        msg = self.indent + text
+    def __indent(self, text, tabs = 1):
+        msg = (Display.INDENT * tabs) + text
         return msg
 
-    def print_unrecognized_response(self, response):
-        msg = "\nUNRECOGNIZED RESPONSE: '{0}'".format(response) 
-        return self.__send(msg)
-        
+    def __indent2(self, text):
+        return self.__indent(text, 2)
+
+    def __indent3(self, text):
+        return self.__indent(text, 3)
+
+    def __indent4(self, text):
+        return self.__indent(text, 4)
+
+
+       
+    def __send(self, text):
+        # Use sys.stdout instead of print so results can be used for automated testing
+        # For some reason a newline character is required to flush ?
+        # That's okay, because we'll use str.rstrip on the other side
+        text = str(text)  # This makes sure that anything printable can be passed through
+        sys.stdout.write(text + '\n')
+        # Each line must be flushed so it can be read by the other side.
+        sys.stdout.flush()
+        return text
+
+

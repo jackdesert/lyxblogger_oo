@@ -34,6 +34,7 @@ class Account:
         self.__url = self.__format_url(url)
         self.__username = username
         self.__password = password 
+        self.__temp_password = None
         self.__section_id = None
         self.__verify_init()
 
@@ -63,7 +64,12 @@ class Account:
         return self.__section_id
 
     def get_password(self):
-        return self.__password
+        if self.__password: return self.__password
+        return self.__temp_password
+
+    def set_temp_password(self, temp_password):
+        if self.__temp_password: raise TempPasswordAlreadySetError()
+        self.__temp_password = temp_password
 
     def get_url(self):
         return self.__url
@@ -74,3 +80,7 @@ class Account:
     def get_username(self):
         return self.__username
 
+
+class TempPasswordAlreadySetError(Exception):
+    def __init__(self):
+        self.msg = 'Temporary password already set'

@@ -31,6 +31,7 @@ import sys
 import unittest
 import pdb
 from image import Image
+from image import ReferenceDirError
 
 class ImageTestCase(unittest.TestCase):
     
@@ -49,6 +50,11 @@ class ImageTestCase(unittest.TestCase):
         aa.set_remote_src('there')
         expected = "<img src='there' />"
         self.assertEqual(expected, aa.get_remote_html())
+    def test_get_local_abs_path(self):
+        aa = Image(self.image_tag)
+        self.assertRaises(ReferenceDirError, lambda: aa.get_local_absolute_src())
+        Image.set_abs_reference_dir_from_html_file('some_file.html')
+        self.assertTrue('hi' in aa.get_local_absolute_src())
 
 
 if __name__ == '__main__':
