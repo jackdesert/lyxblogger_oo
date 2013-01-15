@@ -9,7 +9,8 @@ What's different in this version?
 
 This version is OBJECT ORIENTED. Previous to this version (0.43), LyXBlogger was written using a structured paradigm. 
 
-Where are the class diagrams?
+
+Where is the class diagram?
 ----------------------------
 
 The class diagram is available online at 
