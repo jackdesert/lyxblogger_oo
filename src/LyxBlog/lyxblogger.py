@@ -53,6 +53,7 @@ class LyXBlogger:
         transmitter = self.__manager.pass_transmitter()
         self.__entry.set_transmitter(transmitter)
         self.__verify_create_new_or_overwrite()
+        self.__publishing_message(account)
         self.__entry.publish()
         self.__closing_remarks()
 
@@ -103,6 +104,9 @@ class LyXBlogger:
 
     def __display_summary(self):
         self.__display.print_entry_summary(self.__entry)
+
+    def __publishing_message(self, account):
+        self.__display.print_uploading(account)
 
 
 

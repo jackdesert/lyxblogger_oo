@@ -42,7 +42,8 @@ class LyxbloggerTestCase(unittest.TestCase):
         child.logfile = sys.stdout
         child.expect('Delete')
         child.sendline('0')
-        child.expect('Salvation')
+        child.expect('Uploading')
+        child.expect('Done')
 
 if __name__ == '__main__':
     unittest.main()
