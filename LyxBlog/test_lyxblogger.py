@@ -34,7 +34,7 @@ from lyxblogger import LyXBlogger
 class LyxbloggerTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.filename = '../../test_samples/original.elyxer_html' 
+        self.filename = '../test_samples/original.elyxer_html' 
     def test_initialize(self):
         aa = LyXBlogger(self.filename)
     def test_basic_runthrough(self):

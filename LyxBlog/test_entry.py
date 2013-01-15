@@ -40,7 +40,7 @@ from account import Account
 class EntryTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.filename = '../../test_samples/original.elyxer_html'
+        self.filename = '../test_samples/original.elyxer_html'
     def test_get_num_words(self):
         aa = ElyxerEntry()
         aa._Entry__body = '<b> </b> three more lines'
