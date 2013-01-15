@@ -91,6 +91,13 @@ class DisplayTestCase(unittest.TestCase):
         self.assertEqual(result, expected)
     def test_welcome(self):
         self.assertEqual(self.display.welcome('33'), 'LyXBlogger 33')
+    def test_print_done(self):
+        self.assertEqual(self.display.print_done(), 'Done')
+    def test_print_uploading(self):
+        account = Account('hi.com', 'mister-t', None)
+        expected = "Uploading to hi.com"
+        returned = self.display.print_uploading(account)
+        self.assertEqual(expected, returned)
         
 
 

@@ -98,6 +98,14 @@ class Display:
         elif image_count > 1:
             msg += self.__indent3('{0} images\n'.format(image_count))
         return self.__send(msg)
+    
+    def print_done(self):
+        msg = 'Done'
+        return self.__send(msg)
+
+    def print_uploading(self, account):
+        msg = "Uploading to {0}".format(account.get_url())
+        return self.__send(msg)
  
     def __print_accounts(self, accounts, recent_id, delete):
         msg =  'ACCOUNTS\n'

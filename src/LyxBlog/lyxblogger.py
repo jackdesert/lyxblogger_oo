@@ -99,7 +99,7 @@ class LyXBlogger:
         self.__display.welcome(LyXBlogger.VERSION)
 
     def __closing_remarks(self):
-        pass
+        self.__display.print_done()
 
     def __display_summary(self):
         self.__display.print_entry_summary(self.__entry)
