@@ -25,15 +25,14 @@
 
 '''These are the instructions for installing wordpresslib on your machine
 
-cd lyxblogger/INSTALL
-python setup-dependencies.py 
-To install normally (includes wordpresslib and elyxer):
-  python setup.py install
+  cd lyxblogger/INSTALL
+  python setup-dependencies.py install
 
-To install without installing elyxer (still includes wordpresslib)
-  python setup-no-elyxer.py install
+Wordpresslib is now installed on your machine. You can now try out 
+LyXBlogger
 
-LyXBlogger is now installed as a module on your system. You invoke it 
-by calling 
-  python -m lyxblogger input_file.(x)html
+  cd lyxblogger/LyxBlog
+  python lyxblogger.py ../test_samples/original.elyxer_html
+
+'''
 
