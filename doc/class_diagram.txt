@@ -1,0 +1,85 @@
+LyXBlogger
+--
+--
++start()
+
+
+AccountManager
+--
+--
++ pass_transmitter()
++ reset_config()
++ get_accounts()
++ add_new_account()
++ get_recent_account()
++ get_recent_id()
++ get_account_by_id()
++ delete_account_by_id()
++ get_default_account(cls)
++ set_section_id()
+
+Account
+--
+--
++ set_password()
++ get_section_id()
++ get_password()
++ set_temp_password()
++ get_url()
++ get_full_url()
++ get_username()
+
+Display
+--
+--
++ ask_for_new_username()
++ ask_for_title()
++ ask_for_new_url()
++ ask_for_new_password()
++ ask_for_temp_password()
++ ask_which_account()
++ print_unrecognized_response()
++ welcome()
++ print_entry_summary()
++ print_done()
++ print_uploading()
+
+
+Entry
+--
+--
++ get_body()
++ get_title()
++ set_title()
++ get_num_words()
++ get_num_images()
++ load()
++ publish()
++ set_transmitter()
+
+
+Image
+--
+--
++ get_local_absolute_src()
++ get_local_html()
++ set_remote_src()
++ get_remote_src()
++ get_remote_html()
++ set_abs_reference_dir_from_html_file()
+
+Jabber
+--
+--
++ readline()
+
+
+Transmitter
+--
+--
++ publish_image()
++ set_account()
++ refresh_connection_with_account_details()
++ select_post_id()
++ publish_entry()
++ check_credentials()
