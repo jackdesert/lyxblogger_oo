@@ -23,10 +23,10 @@
 #                                                                      #
 ########################################################################
 
-'''These are the instructions for installing LyXBlogger on your machine.
-Open a shell. (cmd on Windows)
-Navigate to the same directory where this file is located.
+'''These are the instructions for installing wordpresslib on your machine
 
+cd lyxblogger/INSTALL
+python setup-dependencies.py 
 To install normally (includes wordpresslib and elyxer):
   python setup.py install
 
