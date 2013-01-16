@@ -26,7 +26,7 @@
 '''These are the instructions for installing wordpresslib on your machine
 
   cd lyxblogger/INSTALL
-  python setup-dependencies.py install
+  python setup_dependencies.py install
 
 Wordpresslib is now installed on your machine. You can now try out 
 LyXBlogger
