@@ -1,7 +1,7 @@
 LyXBlogger Demo
 ==============
 
-This is a LyXBlogger demo, given to Good Guide for a demonstration of my Object Oriented programming skills.
+This is a LyXBlogger(lyxblogger.nongnu.org) demo, given to Good Guide to demonstrate object oriented programming skills
 
 
 What's different in this version?
@@ -37,7 +37,7 @@ First install the wordpresslib dependency:
     cd lyxblogger/INSTALL
     sudo python setup_dependencies.py install
 
-Wordpresslib is now installed on your machine. You can now try out LyXBlogger
+You can now try out LyXBlogger on a sample html file
 
     cd lyxblogger/LyxBlog
     python lyxblogger.py ../test_samples/original.elyxer_html

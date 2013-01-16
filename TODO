@@ -3,11 +3,7 @@ LyXBlogger 0.43 TODO
 
 Verify that url typed correctly before saving to config, even if no password given
 Fail gracefully if url not found
-get a default test to pass in test_lyxblogger.py
-fix so that temp password is used
 test with old versions of config files to ensure backwards compatibility
 fix so that accounts can be verified reliably without time delay
 allow either elyxer_entry or lyxhtml_entry, based on header
 careful interaction design of what exactly we want to display and when
-set up basic install script to install dependencies only
-flush out test_lyxblogger.py so that it can demo the site
