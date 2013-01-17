@@ -34,12 +34,12 @@ How do I run it?
 
 First install the wordpresslib dependency:
 
-    cd lyxblogger/INSTALL
+    cd INSTALL
     sudo python setup_dependencies.py install
 
 You can now try out LyXBlogger on a sample html file
 
-    cd lyxblogger/LyxBlog
+    cd ../LyxBlog
     python lyxblogger.py ../test_samples/original.elyxer_html
 
 '''
